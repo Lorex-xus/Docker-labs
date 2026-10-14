@@ -21,7 +21,7 @@ jobs:
           echo "Rama: $GITHUB_REF_NAME"
           echo "Autor del commit: $GITHUB_ACTOR"
           echo "SHA: $GITHUB_SHA"
-          echo "Numero de commit: $GITHUB_RUN_ID
+          echo "Numero de commit: $GITHUB_RUN_ID"
           uname -a
     # Ver el username de linux uname -a
     
