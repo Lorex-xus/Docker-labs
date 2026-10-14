@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+  minecraft-server:
+    build:
+      context: .
+    image: minecraft-server:latest
+    container_name: minecraft-server
+    restart: unless-stopped
+    ports:
+      - "25565:25565"
+    volumes:
+      - ./data:/data
+  playit:
+    image: ghcr.io/playit-cloud/playit-agent:1.0
+    network_mode: host
+    environment:
+    - SECRET_KEY=${PLAYIT_KEY}
+    
