@@ -1,0 +1,17 @@
+name: Hola_mundo
+
+on: # Trigger
+  push: # Razon del trigger - Push
+    branches: [main] # Ramas sobre las que afecta
+
+permissions: # Permisos 
+  contents: read # Lectura de archivos
+
+jobs: # Workflows
+  saludar: # Contenedor
+    runs-on: ubuntu-latest # Imagen
+    steps:
+      - uses: actions/checkout@4 # Herramientas
+      - name: saludo
+        run: echo "Hola mundo de GitHub!"
+    
