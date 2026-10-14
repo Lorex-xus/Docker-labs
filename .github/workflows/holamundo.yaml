@@ -11,7 +11,7 @@ jobs: # Workflows
   saludar: # Contenedor
     runs-on: ubuntu-latest # Imagen
     steps:
-      - uses: actions/checkout@4 # Herramientas
+      - uses: actions/checkout@v4 # Herramientas
       - name: saludo
         run: echo "Hola mundo de GitHub!"
     
