@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glosario de CSS — Referencia</title>
+<style>
+  :root{
+    --bg: #16171f;
+    --surface: #1e2029;
+    --surface-2: #262836;
+    --border: #33354a;
+    --text: #d7d9e5;
+    --text-dim: #8b8da3;
+    --tag: #f0a8d0;
+    --prop: #e8b969;
+    --val: #a8d97a;
+    --accent: #7dd3c0;
+    --mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: "Inter", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--text); font-family:var(--sans); line-height:1.55;}
+
+  .app{display:grid; grid-template-columns: 260px 1fr; min-height:100vh;}
+  @media (max-width: 820px){
+    .app{grid-template-columns: 1fr;}
+    nav.sidebar{position: static; height:auto; max-height: 220px;}
+  }
+
+  nav.sidebar{
+    background:var(--surface);
+    border-right:1px solid var(--border);
+    padding:20px 16px;
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+  }
+  .brand{font-family:var(--mono); font-size:13px; color:var(--text-dim); margin-bottom:18px;}
+  .brand strong{color:var(--tag); font-weight:600;}
+  #search{
+    width:100%; padding:10px 12px;
+    background:var(--surface-2); border:1px solid var(--border);
+    border-radius:6px; color:var(--text); font-family:var(--sans);
+    font-size:14px; margin-bottom:18px; outline:none;
+  }
+  #search:focus{border-color:var(--tag);}
+  #search::placeholder{color:var(--text-dim);}
+  .cat-link{
+    display:block; padding:6px 8px; border-radius:5px;
+    color:var(--text-dim); text-decoration:none; font-size:13.5px;
+    margin-bottom:2px; transition: background .12s, color .12s;
+  }
+  .cat-link:hover{background:var(--surface-2); color:var(--text);}
+  .cat-count{float:right; color:var(--text-dim); font-family:var(--mono); font-size:11px;}
+
+  main{padding: 36px 44px 80px; max-width: 920px;}
+  header.hero{margin-bottom: 40px; padding-bottom:24px; border-bottom:1px solid var(--border);}
+  header.hero h1{font-family:var(--mono); font-size: 26px; margin:0 0 8px; font-weight:600;}
+  header.hero h1 span{color:var(--tag);}
+  header.hero p{color:var(--text-dim); font-size:14.5px; margin:0; max-width:62ch;}
+
+  section.category{margin-bottom: 44px; scroll-margin-top: 20px;}
+  section.category > h2{
+    font-family:var(--mono); font-size:12px; text-transform:uppercase;
+    letter-spacing:0.08em; color:var(--accent); margin:0 0 16px;
+    padding-bottom:8px; border-bottom:1px solid var(--border);
+  }
+
+  .entry{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:8px; padding:18px 20px; margin-bottom:14px;
+  }
+  .entry.hidden{display:none;}
+  .entry-head{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:8px;}
+  .propname{font-family:var(--mono); font-size:16px; color:var(--prop); font-weight:600;}
+  .desc{color:var(--text); font-size:14.5px; margin:0 0 12px;}
+  .example{
+    background:#111219; border:1px solid var(--border); border-radius:6px;
+    padding:10px 14px; font-family:var(--mono); font-size:13px; color:var(--text-dim);
+    overflow-x:auto; margin-bottom:12px; white-space:pre;
+  }
+  .example .sel{color:var(--tag);}
+  .example .p{color:var(--prop);}
+  .example .v{color:var(--val);}
+
+  table.vals{width:100%; border-collapse:collapse; font-size:13.5px;}
+  table.vals th{
+    text-align:left; color:var(--text-dim); font-weight:500; font-size:11px;
+    text-transform:uppercase; letter-spacing:0.04em; padding:6px 10px 6px 0;
+    border-bottom:1px solid var(--border);
+  }
+  table.vals td{padding:7px 10px 7px 0; border-bottom:1px solid #26283566; vertical-align:top;}
+  table.vals tr:last-child td{border-bottom:none;}
+  .val-name{font-family:var(--mono); color:var(--val); white-space:nowrap;}
+  .no-vals{color:var(--text-dim); font-size:13px; font-style:italic;}
+
+  #empty-state{display:none; color:var(--text-dim); font-size:14px; padding:40px 0; text-align:center;}
+
+  ::-webkit-scrollbar{width:10px; height:10px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:var(--border); border-radius:6px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <nav class="sidebar">
+    <div class="brand">glosario<strong>{css}</strong></div>
+    <input type="text" id="search" placeholder="Buscar propiedad o valor…" autocomplete="off">
+    <div id="cat-nav"></div>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <h1>Glosario de <span>CSS</span></h1>
+      <p>Referencia rápida de propiedades CSS, para qué sirve cada una y qué valores puede tomar. Usa el buscador para filtrar por nombre de propiedad, valor o palabra clave.</p>
+    </header>
+
+    <div id="content"></div>
+    <div id="empty-state">No se encontraron resultados.</div>
+  </main>
+
+</div>
+
+<script>
+const DATA = [
+{
+  category: "Selectores",
+  items: [
+    {
+      prop: "selector de etiqueta",
+      desc: "Aplica estilo a todos los elementos de ese tipo en la página.",
+      example: `<span class="sel">p</span> {\n  <span class="p">color</span>: <span class="v">navy</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: ".clase",
+      desc: "Aplica estilo a todos los elementos que tengan esa clase en su atributo class.",
+      example: `<span class="sel">.tarjeta</span> {\n  <span class="p">padding</span>: <span class="v">16px</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "#id",
+      desc: "Aplica estilo a un único elemento con ese id. Tiene más prioridad que una clase.",
+      example: `<span class="sel">#encabezado</span> {\n  <span class="p">background</span>: <span class="v">#1e2029</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "selector descendiente",
+      desc: "Selecciona elementos que están dentro de otro, sin importar la profundidad. Se escribe con un espacio.",
+      example: `<span class="sel">nav a</span> {\n  <span class="p">text-decoration</span>: <span class="v">none</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "selector combinado ( , )",
+      desc: "Aplica el mismo estilo a varios selectores a la vez, separados por coma.",
+      example: `<span class="sel">h1, h2, h3</span> {\n  <span class="p">font-family</span>: <span class="v">sans-serif</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "*",
+      desc: "Selector universal: aplica a todos los elementos del documento. Útil para resets.",
+      example: `<span class="sel">*</span> {\n  <span class="p">box-sizing</span>: <span class="v">border-box</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: ":hover / :focus / :active",
+      desc: "Pseudo-clases: aplican estilo según el estado del elemento (cursor encima, foco de teclado, mientras se hace clic).",
+      example: `<span class="sel">button:hover</span> {\n  <span class="p">background</span>: <span class="v">#444</span>;\n}`,
+      vals: [
+        [":hover", "Mientras el cursor está encima."],
+        [":focus", "Mientras el elemento tiene el foco (ej. un input activo)."],
+        [":active", "Mientras se está haciendo clic."],
+        [":disabled", "Cuando el elemento está deshabilitado."]
+      ]
+    },
+    {
+      prop: "::before / ::after",
+      desc: "Pseudo-elementos: insertan contenido generado antes o después del contenido real de un elemento. Requieren la propiedad content.",
+      example: `<span class="sel">.precio::after</span> {\n  <span class="p">content</span>: <span class="v">" MXN"</span>;\n}`,
+      vals: []
+    }
+  ]
+},
+{
+  category: "Caja y dimensiones",
+  items: [
+    {
+      prop: "width / height",
+      desc: "Define el ancho y alto de un elemento.",
+      example: `<span class="sel">.caja</span> {\n  <span class="p">width</span>: <span class="v">300px</span>;\n  <span class="p">height</span>: <span class="v">200px</span>;\n}`,
+      vals: [
+        ["px", "Píxeles, valor fijo exacto."],
+        ["%", "Porcentaje relativo al contenedor padre."],
+        ["vw / vh", "Porcentaje del ancho/alto de la ventana del navegador."],
+        ["auto", "El navegador calcula el valor automáticamente."],
+        ["fit-content / max-content", "Se ajusta al contenido interno."]
+      ]
+    },
+    {
+      prop: "max-width / min-width",
+      desc: "Limita el ancho máximo o mínimo que puede tener un elemento, sin importar el valor de width.",
+      example: `<span class="sel">.contenedor</span> {\n  <span class="p">max-width</span>: <span class="v">1200px</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "box-sizing",
+      desc: "Controla si padding y border se suman al width/height declarado o se incluyen dentro de él.",
+      example: `<span class="sel">*</span> {\n  <span class="p">box-sizing</span>: <span class="v">border-box</span>;\n}`,
+      vals: [
+        ["content-box", "Valor por defecto: padding y border se suman al ancho."],
+        ["border-box", "Padding y border quedan incluidos dentro del ancho declarado."]
+      ]
+    },
+    {
+      prop: "margin",
+      desc: "Espacio exterior entre el borde del elemento y los elementos vecinos.",
+      example: `<span class="sel">.caja</span> {\n  <span class="p">margin</span>: <span class="v">10px 20px</span>;\n}`,
+      vals: [
+        ["1 valor", "Aplica a los cuatro lados: margin: 10px;"],
+        ["2 valores", "vertical horizontal: margin: 10px 20px;"],
+        ["4 valores", "arriba derecha abajo izquierda: margin: 10px 20px 10px 20px;"],
+        ["auto", "Centra el elemento horizontalmente si tiene un ancho definido."]
+      ]
+    },
+    {
+      prop: "padding",
+      desc: "Espacio interior entre el borde del elemento y su contenido.",
+      example: `<span class="sel">.caja</span> {\n  <span class="p">padding</span>: <span class="v">16px</span>;\n}`,
+      vals: [
+        ["1 / 2 / 4 valores", "Misma lógica que margin: todos los lados, vertical/horizontal, o los cuatro por separado."]
+      ]
+    },
+    {
+      prop: "border",
+      desc: "Dibuja un borde alrededor del elemento. Se puede escribir como propiedad corta o separada (border-width, border-style, border-color).",
+      example: `<span class="sel">.caja</span> {\n  <span class="p">border</span>: <span class="v">1px solid #333</span>;\n}`,
+      vals: [
+        ["solid / dashed / dotted", "Estilo de línea."],
+        ["none", "Sin borde."]
+      ]
+    },
+    {
+      prop: "border-radius",
+      desc: "Redondea las esquinas de un elemento.",
+      example: `<span class="sel">.boton</span> {\n  <span class="p">border-radius</span>: <span class="v">8px</span>;\n}`,
+      vals: [
+        ["px", "Radio fijo en píxeles."],
+        ["%", "50% convierte un cuadrado en círculo."]
+      ]
+    },
+    {
+      prop: "box-shadow",
+      desc: "Agrega una sombra alrededor del elemento.",
+      example: `<span class="sel">.tarjeta</span> {\n  <span class="p">box-shadow</span>: <span class="v">0 4px 10px rgba(0,0,0,0.2)</span>;\n}`,
+      vals: [
+        ["offset-x offset-y blur color", "Desplazamiento horizontal, vertical, difuminado y color."],
+        ["inset", "Hace que la sombra sea interior en vez de exterior."]
+      ]
+    }
+  ]
+},
+{
+  category: "Texto y tipografía",
+  items: [
+    {
+      prop: "color",
+      desc: "Define el color del texto.",
+      example: `<span class="sel">p</span> {\n  <span class="p">color</span>: <span class="v">#333333</span>;\n}`,
+      vals: [
+        ["#hex", "Código hexadecimal, ej. #ff0000."],
+        ["rgb() / rgba()", "Valores rojo-verde-azul, con transparencia opcional."],
+        ["nombre", "Palabras clave como red, navy, transparent."]
+      ]
+    },
+    {
+      prop: "font-family",
+      desc: "Define la tipografía del texto. Se recomienda listar varias como alternativa (fallback).",
+      example: `<span class="sel">body</span> {\n  <span class="p">font-family</span>: <span class="v">"Inter", Arial, sans-serif</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "font-size",
+      desc: "Tamaño del texto.",
+      example: `<span class="sel">h1</span> {\n  <span class="p">font-size</span>: <span class="v">32px</span>;\n}`,
+      vals: [
+        ["px", "Tamaño fijo en píxeles."],
+        ["rem", "Relativo al tamaño de fuente raíz del documento (recomendado para accesibilidad)."],
+        ["em", "Relativo al tamaño de fuente del elemento padre."]
+      ]
+    },
+    {
+      prop: "font-weight",
+      desc: "Grosor del texto.",
+      example: `<span class="sel">strong</span> {\n  <span class="p">font-weight</span>: <span class="v">700</span>;\n}`,
+      vals: [
+        ["normal", "Equivale a 400."],
+        ["bold", "Equivale a 700."],
+        ["100–900", "Escala numérica de grosor (si la fuente lo soporta)."]
+      ]
+    },
+    {
+      prop: "font-style",
+      desc: "Aplica cursiva u otro estilo al texto.",
+      example: `<span class="sel">em</span> {\n  <span class="p">font-style</span>: <span class="v">italic</span>;\n}`,
+      vals: [["normal", "Sin cursiva."], ["italic", "Cursiva."]]
+    },
+    {
+      prop: "text-align",
+      desc: "Alinea el texto dentro de su contenedor.",
+      example: `<span class="sel">.titulo</span> {\n  <span class="p">text-align</span>: <span class="v">center</span>;\n}`,
+      vals: [["left", "Izquierda (por defecto)."], ["center", "Centrado."], ["right", "Derecha."], ["justify", "Justificado."]]
+    },
+    {
+      prop: "text-decoration",
+      desc: "Controla líneas decorativas del texto, como subrayado.",
+      example: `<span class="sel">a</span> {\n  <span class="p">text-decoration</span>: <span class="v">none</span>;\n}`,
+      vals: [["underline", "Subrayado."], ["line-through", "Tachado."], ["none", "Sin decoración."]]
+    },
+    {
+      prop: "line-height",
+      desc: "Altura de línea del texto; controla el espacio vertical entre renglones.",
+      example: `<span class="sel">p</span> {\n  <span class="p">line-height</span>: <span class="v">1.6</span>;\n}`,
+      vals: [["número sin unidad", "Multiplicador del tamaño de fuente (recomendado, ej. 1.5)."]]
+    },
+    {
+      prop: "letter-spacing",
+      desc: "Espacio horizontal entre letras.",
+      example: `<span class="sel">.titulo</span> {\n  <span class="p">letter-spacing</span>: <span class="v">0.05em</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "text-transform",
+      desc: "Cambia mayúsculas/minúsculas del texto visualmente, sin alterar el HTML original.",
+      example: `<span class="sel">.etiqueta</span> {\n  <span class="p">text-transform</span>: <span class="v">uppercase</span>;\n}`,
+      vals: [["uppercase", "TODO EN MAYÚSCULAS."], ["lowercase", "todo en minúsculas."], ["capitalize", "Primera Letra De Cada Palabra."]]
+    }
+  ]
+},
+{
+  category: "Fondos",
+  items: [
+    {
+      prop: "background-color",
+      desc: "Color de fondo de un elemento.",
+      example: `<span class="sel">body</span> {\n  <span class="p">background-color</span>: <span class="v">#f5f5f5</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "background-image",
+      desc: "Imagen de fondo de un elemento.",
+      example: `<span class="sel">.hero</span> {\n  <span class="p">background-image</span>: <span class="v">url("fondo.jpg")</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "background-size",
+      desc: "Controla cómo se escala la imagen de fondo dentro del elemento.",
+      example: `<span class="sel">.hero</span> {\n  <span class="p">background-size</span>: <span class="v">cover</span>;\n}`,
+      vals: [
+        ["cover", "Cubre todo el elemento, recortando si es necesario."],
+        ["contain", "Se ajusta completa sin recortar, puede dejar espacio vacío."]
+      ]
+    },
+    {
+      prop: "background-position",
+      desc: "Posición de la imagen de fondo dentro del elemento.",
+      example: `<span class="sel">.hero</span> {\n  <span class="p">background-position</span>: <span class="v">center</span>;\n}`,
+      vals: [["center", "Centrada."], ["top / bottom / left / right", "Alineada a ese borde."]]
+    },
+    {
+      prop: "background-repeat",
+      desc: "Controla si la imagen de fondo se repite en mosaico.",
+      example: `<span class="sel">.patron</span> {\n  <span class="p">background-repeat</span>: <span class="v">no-repeat</span>;\n}`,
+      vals: [["repeat", "Se repite (por defecto)."], ["no-repeat", "No se repite."]]
+    },
+    {
+      prop: "opacity",
+      desc: "Transparencia general del elemento, de 0 (invisible) a 1 (opaco).",
+      example: `<span class="sel">.deshabilitado</span> {\n  <span class="p">opacity</span>: <span class="v">0.5</span>;\n}`,
+      vals: []
+    }
+  ]
+},
+{
+  category: "Layout: display y position",
+  items: [
+    {
+      prop: "display",
+      desc: "Define cómo se comporta el elemento dentro del flujo del documento.",
+      example: `<span class="sel">.caja</span> {\n  <span class="p">display</span>: <span class="v">flex</span>;\n}`,
+      vals: [
+        ["block", "Ocupa todo el ancho disponible, inicia en nueva línea (ej. div, p)."],
+        ["inline", "Solo ocupa el ancho de su contenido, no inicia nueva línea (ej. span, a)."],
+        ["inline-block", "Como inline pero permite definir width/height."],
+        ["flex", "Activa el modelo de caja flexible para sus hijos directos."],
+        ["grid", "Activa el modelo de cuadrícula para sus hijos directos."],
+        ["none", "Oculta el elemento, sin dejar espacio reservado."]
+      ]
+    },
+    {
+      prop: "position",
+      desc: "Define el método de posicionamiento del elemento.",
+      example: `<span class="sel">.modal</span> {\n  <span class="p">position</span>: <span class="v">fixed</span>;\n  <span class="p">top</span>: <span class="v">0</span>;\n}`,
+      vals: [
+        ["static", "Posición normal del flujo (por defecto)."],
+        ["relative", "Se desplaza desde su posición original, sin sacar su espacio del flujo."],
+        ["absolute", "Se posiciona respecto al ancestro posicionado más cercano."],
+        ["fixed", "Se posiciona respecto a la ventana del navegador; no se mueve al hacer scroll."],
+        ["sticky", "Se comporta como relative hasta cierto punto de scroll, luego como fixed."]
+      ]
+    },
+    {
+      prop: "top / right / bottom / left",
+      desc: "Desplazamiento del elemento desde cada borde, usado junto con position (distinto de static).",
+      example: `<span class="sel">.esquina</span> {\n  <span class="p">position</span>: <span class="v">absolute</span>;\n  <span class="p">top</span>: <span class="v">10px</span>;\n  <span class="p">right</span>: <span class="v">10px</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "z-index",
+      desc: "Controla el orden de apilamiento (qué elemento queda encima de cuál) cuando se superponen. Solo funciona en elementos con position distinto de static.",
+      example: `<span class="sel">.modal</span> {\n  <span class="p">z-index</span>: <span class="v">100</span>;\n}`,
+      vals: [["número", "Mayor número queda más arriba en el apilamiento."]]
+    },
+    {
+      prop: "overflow",
+      desc: "Controla qué pasa cuando el contenido es más grande que su contenedor.",
+      example: `<span class="sel">.panel</span> {\n  <span class="p">overflow</span>: <span class="v">auto</span>;\n}`,
+      vals: [
+        ["visible", "El contenido se desborda sin recortarse (por defecto)."],
+        ["hidden", "El contenido que sobra se recorta y se oculta."],
+        ["scroll", "Siempre muestra barras de desplazamiento."],
+        ["auto", "Muestra barras de desplazamiento solo si hace falta."]
+      ]
+    }
+  ]
+},
+{
+  category: "Layout: Flexbox",
+  items: [
+    {
+      prop: "display: flex",
+      desc: "Convierte un contenedor en flex, alineando a sus hijos directos en una fila o columna flexible.",
+      example: `<span class="sel">.contenedor</span> {\n  <span class="p">display</span>: <span class="v">flex</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "flex-direction",
+      desc: "Define el eje principal en el que se acomodan los elementos flex.",
+      example: `<span class="sel">.contenedor</span> {\n  <span class="p">flex-direction</span>: <span class="v">column</span>;\n}`,
+      vals: [
+        ["row", "En fila, de izquierda a derecha (por defecto)."],
+        ["column", "En columna, de arriba hacia abajo."],
+        ["row-reverse / column-reverse", "Igual pero en orden inverso."]
+      ]
+    },
+    {
+      prop: "justify-content",
+      desc: "Alinea los elementos a lo largo del eje principal (horizontal si flex-direction es row).",
+      example: `<span class="sel">.contenedor</span> {\n  <span class="p">justify-content</span>: <span class="v">space-between</span>;\n}`,
+      vals: [
+        ["flex-start", "Al inicio (por defecto)."],
+        ["center", "Centrados."],
+        ["flex-end", "Al final."],
+        ["space-between", "Espacio distribuido entre ellos, sin espacio en los extremos."],
+        ["space-around", "Espacio distribuido alrededor de cada elemento."]
+      ]
+    },
+    {
+      prop: "align-items",
+      desc: "Alinea los elementos a lo largo del eje cruzado (vertical si flex-direction es row).",
+      example: `<span class="sel">.contenedor</span> {\n  <span class="p">align-items</span>: <span class="v">center</span>;\n}`,
+      vals: [
+        ["stretch", "Estira los elementos para llenar el eje cruzado (por defecto)."],
+        ["center", "Centrados."],
+        ["flex-start / flex-end", "Al inicio o al final del eje cruzado."]
+      ]
+    },
+    {
+      prop: "gap",
+      desc: "Espacio entre los elementos flex (o grid), sin necesidad de márgenes manuales.",
+      example: `<span class="sel">.contenedor</span> {\n  <span class="p">gap</span>: <span class="v">16px</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "flex-wrap",
+      desc: "Controla si los elementos pasan a una nueva línea cuando no caben en el contenedor.",
+      example: `<span class="sel">.contenedor</span> {\n  <span class="p">flex-wrap</span>: <span class="v">wrap</span>;\n}`,
+      vals: [["nowrap", "Todo en una sola línea (por defecto), puede desbordar."], ["wrap", "Pasa a nueva línea si no cabe."]]
+    },
+    {
+      prop: "flex",
+      desc: "Propiedad corta usada en los hijos de un contenedor flex, para definir cuánto crecen o se encogen.",
+      example: `<span class="sel">.columna</span> {\n  <span class="p">flex</span>: <span class="v">1</span>;\n}`,
+      vals: [["1", "Crece para ocupar el espacio disponible, repartido entre hermanos con flex:1."], ["0", "No crece ni se encoge, mantiene su tamaño natural."]]
+    }
+  ]
+},
+{
+  category: "Layout: Grid",
+  items: [
+    {
+      prop: "display: grid",
+      desc: "Convierte un contenedor en cuadrícula (grid), permitiendo definir filas y columnas explícitas.",
+      example: `<span class="sel">.contenedor</span> {\n  <span class="p">display</span>: <span class="v">grid</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "grid-template-columns",
+      desc: "Define el número y tamaño de las columnas de la cuadrícula.",
+      example: `<span class="sel">.contenedor</span> {\n  <span class="p">grid-template-columns</span>: <span class="v">1fr 1fr 1fr</span>;\n}`,
+      vals: [
+        ["fr", "Fracción del espacio disponible (ej. 1fr 2fr reparte en proporción 1:2)."],
+        ["repeat()", "Repite un patrón, ej. repeat(3, 1fr)."],
+        ["px / %", "Tamaños fijos o porcentuales."]
+      ]
+    },
+    {
+      prop: "grid-template-rows",
+      desc: "Define el número y tamaño de las filas de la cuadrícula.",
+      example: `<span class="sel">.contenedor</span> {\n  <span class="p">grid-template-rows</span>: <span class="v">auto 1fr auto</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "gap",
+      desc: "Espacio entre filas y columnas de la cuadrícula.",
+      example: `<span class="sel">.contenedor</span> {\n  <span class="p">gap</span>: <span class="v">20px</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "grid-column / grid-row",
+      desc: "Define en qué columnas o filas se posiciona un elemento hijo dentro de la cuadrícula.",
+      example: `<span class="sel">.destacado</span> {\n  <span class="p">grid-column</span>: <span class="v">1 / 3</span>;\n}`,
+      vals: [["inicio / fin", "Números de línea de la cuadrícula donde empieza y termina el elemento."]]
+    }
+  ]
+},
+{
+  category: "Transiciones y animaciones",
+  items: [
+    {
+      prop: "transition",
+      desc: "Anima suavemente el cambio de una propiedad CSS cuando su valor cambia (ej. al hacer hover).",
+      example: `<span class="sel">.boton</span> {\n  <span class="p">transition</span>: <span class="v">background-color 0.3s ease</span>;\n}`,
+      vals: [
+        ["propiedad", "Qué propiedad animar (o all para todas)."],
+        ["duración", "Tiempo en segundos (s) o milisegundos (ms)."],
+        ["ease / linear / ease-in-out", "Curva de aceleración de la animación."]
+      ]
+    },
+    {
+      prop: "transform",
+      desc: "Aplica transformaciones visuales como rotar, escalar, mover o inclinar un elemento, sin afectar el flujo del documento.",
+      example: `<span class="sel">.tarjeta:hover</span> {\n  <span class="p">transform</span>: <span class="v">scale(1.05)</span>;\n}`,
+      vals: [
+        ["scale()", "Escala el tamaño."],
+        ["rotate()", "Rota en grados."],
+        ["translate()", "Desplaza en X e Y sin afectar el flujo."],
+        ["skew()", "Inclina el elemento."]
+      ]
+    },
+    {
+      prop: "@keyframes",
+      desc: "Define los pasos de una animación personalizada, para usarse con la propiedad animation.",
+      example: `<span class="sel">@keyframes</span> aparecer {\n  <span class="v">from</span> { opacity: 0; }\n  <span class="v">to</span> { opacity: 1; }\n}`,
+      vals: []
+    },
+    {
+      prop: "animation",
+      desc: "Aplica una animación definida con @keyframes a un elemento.",
+      example: `<span class="sel">.aviso</span> {\n  <span class="p">animation</span>: <span class="v">aparecer 0.5s ease forwards</span>;\n}`,
+      vals: [
+        ["nombre", "Nombre del @keyframes a usar."],
+        ["duración", "Tiempo que dura la animación."],
+        ["infinite", "Repite la animación indefinidamente."]
+      ]
+    }
+  ]
+},
+{
+  category: "Variables y responsive",
+  items: [
+    {
+      prop: "--variable (custom property)",
+      desc: "Define una variable CSS reutilizable, normalmente declarada en :root para usarla en todo el documento.",
+      example: `<span class="sel">:root</span> {\n  <span class="p">--color-principal</span>: <span class="v">#2c3e50</span>;\n}\n<span class="sel">h1</span> {\n  <span class="p">color</span>: <span class="v">var(--color-principal)</span>;\n}`,
+      vals: []
+    },
+    {
+      prop: "@media",
+      desc: "Aplica un bloque de estilos solo cuando se cumple una condición, típicamente el ancho de pantalla (diseño responsive).",
+      example: `<span class="sel">@media</span> (max-width: 600px) {\n  .contenedor { flex-direction: column; }\n}`,
+      vals: [
+        ["max-width", "Se aplica cuando la pantalla es igual o más angosta que ese valor."],
+        ["min-width", "Se aplica cuando la pantalla es igual o más ancha que ese valor."]
+      ]
+    },
+    {
+      prop: "clamp()",
+      desc: "Define un valor fluido con un mínimo, un valor preferido y un máximo; común para tipografía responsive.",
+      example: `<span class="sel">h1</span> {\n  <span class="p">font-size</span>: <span class="v">clamp(1.5rem, 4vw, 3rem)</span>;\n}`,
+      vals: [["mínimo, preferido, máximo", "El navegador elige el valor preferido salvo que se salga del rango."]]
+    }
+  ]
+}
+];
+
+const contentEl = document.getElementById('content');
+const navEl = document.getElementById('cat-nav');
+const emptyEl = document.getElementById('empty-state');
+
+function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-'); }
+
+DATA.forEach(cat => {
+  const catId = slug(cat.category);
+
+  const navLink = document.createElement('a');
+  navLink.href = '#' + catId;
+  navLink.className = 'cat-link';
+  navLink.innerHTML = cat.category + '<span class="cat-count">' + cat.items.length + '</span>';
+  navEl.appendChild(navLink);
+
+  const section = document.createElement('section');
+  section.className = 'category';
+  section.id = catId;
+
+  const h2 = document.createElement('h2');
+  h2.textContent = cat.category;
+  section.appendChild(h2);
+
+  cat.items.forEach(item => {
+    const entry = document.createElement('div');
+    entry.className = 'entry';
+    entry.dataset.search = (item.prop + ' ' + item.desc + ' ' + item.vals.map(v=>v[0]).join(' ')).toLowerCase();
+
+    let valsHtml = '<p class="no-vals">Consulta el ejemplo de uso arriba.</p>';
+    if(item.vals.length){
+      valsHtml = '<table class="vals"><tr><th>Valor</th><th>Qué hace</th></tr>' +
+        item.vals.map(v => `<tr><td class="val-name">${v[0]}</td><td>${v[1]}</td></tr>`).join('') +
+        '</table>';
+    }
+
+    entry.innerHTML = `
+      <div class="entry-head"><span class="propname">${item.prop}</span></div>
+      <p class="desc">${item.desc}</p>
+      <div class="example">${item.example}</div>
+      ${valsHtml}
+    `;
+    section.appendChild(entry);
+  });
+
+  contentEl.appendChild(section);
+});
+
+const searchInput = document.getElementById('search');
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  let visibleCount = 0;
+  document.querySelectorAll('.entry').forEach(entry => {
+    const match = !q || entry.dataset.search.includes(q);
+    entry.classList.toggle('hidden', !match);
+    if(match) visibleCount++;
+  });
+  document.querySelectorAll('.category').forEach(sec => {
+    const anyVisible = sec.querySelectorAll('.entry:not(.hidden)').length > 0;
+    sec.style.display = anyVisible ? '' : 'none';
+  });
+  emptyEl.style.display = visibleCount === 0 ? 'block' : 'none';
+});
+</script>
+</body>
+</html>
