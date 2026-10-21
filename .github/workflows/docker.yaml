@@ -1,0 +1,23 @@
+name: Buildear Imagen
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  construir:
+    name: Lint y Construccion
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Importar Chekout
+        uses: actions/checkout@4
+
+      - name: Lint de la receta
+        uses: hadolint/hadolint-action@v3.4.0 
+        with:
+          dockerfile: Dockerfile
+          
