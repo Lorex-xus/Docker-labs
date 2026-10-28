@@ -8,8 +8,8 @@ permissions:
   contents: read
 
 jobs:
-  construir:
-    name: Lint y Construccion
+  revisar:
+    name: Lint 
     runs-on: ubuntu-latest
 
     steps:
@@ -20,4 +20,17 @@ jobs:
         uses: hadolint/hadolint-action@v3.4.0 
         with:
           dockerfile: Dockerfile
-          
+  
+  construir:
+    name: Construir Imagen
+    needs: revisar
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Importar Chekout
+        uses: actions/checkout@v4
+
+      - name: Construir
+        run: docker build -t imagen/${{github.sha}} .
+    
+  
