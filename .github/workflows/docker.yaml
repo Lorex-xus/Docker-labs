@@ -21,17 +21,28 @@ jobs:
         with:
           dockerfile: Dockerfile
           ignore: DL3008, DL4006
-  
-  construir:
-    name: Construir Imagen
+
+  publicar:
     needs: revisar
+    name: Iniciar Sesion en GHCR
     runs-on: ubuntu-latest
 
     steps:
+      - name: Iniciar Sesion
+        uses: docker/login-action@v3
+        with: 
+          registry: ghcr.io
+          usarname: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
       - name: Importar Chekout
         uses: actions/checkout@v4
 
       - name: Construir
-        run: docker build -t imagen/${{github.sha}} .
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/minecraft-server:latest
     
   
