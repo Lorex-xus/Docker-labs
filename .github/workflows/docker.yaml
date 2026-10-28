@@ -2,8 +2,10 @@ name: Buildear Imagen
 
 on:
   push:
-    branches: [main]
-
+    # branches: [main]
+    tags:
+      - "v*"
+  
 permissions:
   contents: read
   packages: write
@@ -44,6 +46,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/lorex-xus/minecraft-server:latest
+          tags: ghcr.io/lorex-xus/minecraft-server:${{github.ref_name}}
     
   
