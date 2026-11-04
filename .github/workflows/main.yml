@@ -1,27 +1,53 @@
-name: Dockerfile Lint
+name: Buildear Imagen
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-    
+  workflow_dispatch:
+  
 permissions:
   contents: read
-  
+
 jobs:
-  hadolint:
-    name: Run Hadolint
+  revisar:
+    name: Lint 
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Importar Chekout
         uses: actions/checkout@v4
 
-      - name: Lint Dockerfile
-        uses: hadolint/hadolint-action@v3.1.0
+      - name: Lint de la receta
+        uses: hadolint/hadolint-action@v3.4.0 
         with:
           dockerfile: Dockerfile
+          ignore: DL3008, DL4006
+  
+  construir:
+    needs: revisar
+    runs-on: ubuntu-22.04 #Linux
 
-      - name: Build Image
-        run: docker build -t ${{github.repository}}:${{ github.sha }} .
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+      
+      - name: Construir imagen
+        run: docker build -t servidor-minecraft:latest
+
+      - name: Exportar imagen
+        run: docker save servidor-minecraft:latest -o servidor.tar
+
+      - name: Subir imagen
+        uses: actions/upload-artifact@v7
+        with:
+          name: imagen-docker
+          path: servidor.tar
+          compression-level: 0
+         
+
+
+
+
+
+
+
+
+    
