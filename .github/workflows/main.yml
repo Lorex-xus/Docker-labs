@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Construir imagen
-        run: docker build -t servidor-minecraft:latest
+        run: docker build -t servidor-minecraft:latest .
 
       - name: Exportar imagen
         run: docker save servidor-minecraft:latest -o servidor.tar
