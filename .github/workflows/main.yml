@@ -23,7 +23,7 @@ jobs:
   
   construir:
     needs: revisar
-    runs-on: self-hosted
+    runs-on: Linux
 
     steps:
       - name: Descargar repositorio
@@ -43,7 +43,7 @@ jobs:
           compression-level: 0
   
   importar-windows:
-    runs-on: windows-latest
+    runs-on: Windows
     needs: construir
 
     steps:
