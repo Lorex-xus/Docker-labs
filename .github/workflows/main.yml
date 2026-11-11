@@ -23,7 +23,7 @@ jobs:
   
   construir:
     needs: revisar
-    runs-on: ubuntu-22.04 #Linux
+    runs-on: self-hosted, Linux
 
     steps:
       - name: Descargar repositorio
