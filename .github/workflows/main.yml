@@ -23,7 +23,7 @@ jobs:
   
   construir:
     needs: revisar
-    runs-on: self-hosted, Linux
+    runs-on: self-hosted
 
     steps:
       - name: Descargar repositorio
